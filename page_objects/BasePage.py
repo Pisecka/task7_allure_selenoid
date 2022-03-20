@@ -4,6 +4,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import logging
+import allure
 
 
 
@@ -46,6 +47,9 @@ class BasePage:
             return WebDriverWait(self.browser, self.browser.t).until(EC.visibility_of_element_located(locator))
         except TimeoutException as exc:
             self.logger.exception(f'RECEIVED ERROR: {exc}')
+            allure.attach(name='error',
+                          body=self.browser.get_screenshot_as_png(),
+                          attachment_type=allure.attachment_type.PNG)
             raise AssertionError("Cant find element by locator: {}".format(locator))
 
     def _element(self, locator: tuple):
